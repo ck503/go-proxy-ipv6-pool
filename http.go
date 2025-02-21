@@ -17,11 +17,8 @@ func init() {
 	httpProxy.OnRequest().DoFunc(
 		func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			// 为 IPv6 地址添加方括号
-			outgoingIP, err := generateRandomIPv6(cidr)
-			if err != nil {
-				log.Printf("Generate random IPv6 error: %v", err)
-				return req, nil
-			}
+			outgoingIP := Pool.Get()
+
 			outgoingIP = "[" + outgoingIP + "]"
 			// 使用指定的出口 IP 地址创建连接
 			localAddr, err := net.ResolveTCPAddr("tcp", outgoingIP+":0")
@@ -65,11 +62,8 @@ func init() {
 	httpProxy.OnRequest().HijackConnect(
 		func(req *http.Request, client net.Conn, ctx *goproxy.ProxyCtx) {
 			// 通过代理服务器建立到目标服务器的连接
-			outgoingIP, err := generateRandomIPv6(cidr)
-			if err != nil {
-				log.Printf("Generate random IPv6 error: %v", err)
-				return
-			}
+			//outgoingIP, err := generateRandomIPv6(cidr)
+			outgoingIP := Pool.Get()
 			outgoingIP = "[" + outgoingIP + "]"
 			// 使用指定的出口 IP 地址创建连接
 			localAddr, err := net.ResolveTCPAddr("tcp", outgoingIP+":0")
