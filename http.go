@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -18,6 +19,7 @@ func init() {
 		func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			// 为 IPv6 地址添加方括号
 			outgoingIP := Pool.Get()
+			fmt.Println("get IP", outgoingIP)
 			defer func() {
 				Pool.Put(outgoingIP)
 			}()
