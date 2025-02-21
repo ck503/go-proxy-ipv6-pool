@@ -5,23 +5,22 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/exec"
 	"sync"
 )
 
 type IPPool struct {
-	pool             *sync.Pool
-	CIDR             string // cidr
-	Eth              string // 网卡名称
+	pool *sync.Pool
+	CIDR string // cidr
+	//Eth              string // 网卡名称
 	IPV6Net          *net.IPNet
 	MaskSize         int // 获取网络部分和掩码长度
 	RandomPartLength int // 随机段长度
 }
 
-func NewIPPool(initSize int, cidr string, ethName string) *IPPool {
+func NewIPPool(initSize int, cidr string) *IPPool {
 	p := &IPPool{
 		CIDR: cidr,
-		Eth:  ethName,
+		//Eth:  ethName,
 	}
 
 	_, ipv6Net, err := net.ParseCIDR(cidr)
@@ -78,15 +77,15 @@ func (p *IPPool) generateRandomIPv6() (string, error) {
 	var res = networkPart.String()
 
 	// add to linux core proxy_ndp
-	p.addProxyIP(res)
+	//p.addProxyIP(res)
 
 	return res, nil
 }
 
-func (p *IPPool) addProxyIP(ip string) {
-	cmd := exec.Command("ip", "neigh", "add", "proxy", ip, "dev", p.Eth)
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println("add proxy ip to linux core err", err)
-	}
-}
+//func (p *IPPool) addProxyIP(ip string) {
+//	cmd := exec.Command("ip", "neigh", "add", "proxy", ip, "dev", p.Eth)
+//	err := cmd.Run()
+//	if err != nil {
+//		fmt.Println("add proxy ip to linux core err", err)
+//	}
+//}

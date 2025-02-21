@@ -12,8 +12,7 @@ import (
 
 var cidr string
 var port int
-var size int   // init ip pool size
-var eth string // 网卡名称
+var size int // init ip pool size
 var Pool *IPPool
 
 func main() {
@@ -21,7 +20,6 @@ func main() {
 	flag.IntVar(&port, "port", 52122, "server port")
 	flag.StringVar(&cidr, "cidr", "", "ipv6 cidr")
 	flag.IntVar(&size, "size", 1000, "ip size")
-	flag.StringVar(&eth, "eth", "", "ipv6 cidr")
 	flag.Parse()
 
 	if cidr == "" {
@@ -31,7 +29,7 @@ func main() {
 	httpPort := port
 
 	// 初始化创建ip池
-	Pool = NewIPPool(size, cidr, eth)
+	Pool = NewIPPool(size, cidr)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
