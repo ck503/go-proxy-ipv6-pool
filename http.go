@@ -18,6 +18,9 @@ func init() {
 		func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			// 为 IPv6 地址添加方括号
 			outgoingIP := Pool.Get()
+			defer func() {
+				Pool.Put(outgoingIP)
+			}()
 
 			outgoingIP = "[" + outgoingIP + "]"
 			// 使用指定的出口 IP 地址创建连接
@@ -64,6 +67,9 @@ func init() {
 			// 通过代理服务器建立到目标服务器的连接
 			//outgoingIP, err := generateRandomIPv6(cidr)
 			outgoingIP := Pool.Get()
+			defer func() {
+				Pool.Put(outgoingIP)
+			}()
 			outgoingIP = "[" + outgoingIP + "]"
 			// 使用指定的出口 IP 地址创建连接
 			localAddr, err := net.ResolveTCPAddr("tcp", outgoingIP+":0")
